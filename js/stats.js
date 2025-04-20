@@ -1,64 +1,73 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const chiffreAffairesEl = document.getElementById("chiffreAffaires");
     const beneficeEl = document.getElementById("benefice");
     const ctx = document.getElementById("graphiqueVentes").getContext("2d");
 
-    const commandes = JSON.parse(localStorage.getItem("commandes") || "[]");
+    // Récupérer les données depuis le serveur
+    const response = await fetch("list.php");
+    const commandes = await response.json();
 
-    let chiffreAffaires = 0;
-    let depenses = 0;
-    const ventesParMaillot = {};
+    let totalChiffreAffaires = 0;
+    let totalBenefice = 0;
+    const statutCounts = {};
 
-    commandes.forEach(commande => {
-        const prixAchat = commande.prixAchat || (commande.prixTotal / commande.quantite) || 0;
-        if (commande.quantite) {
-            depenses += commande.quantite * prixAchat;
-        }
+    commandes.forEach((commande) => {
+        if (commande.maillots && commande.maillots.length > 0) {
+            commande.maillots.forEach((maillot) => {
+                const prixVente = parseFloat(maillot.prix_vente || 0);
+                const prixAchat = parseFloat(maillot.prix_unitaire || 0);
+                const statut = maillot.statut || "Inconnu";
 
-        if (Array.isArray(commande.maillots)) {
-            commande.maillots.forEach(maillot => {
-                if (maillot.statut === "livré") {
-                    chiffreAffaires += maillot.prixVente || 0;
-                    const nomMaillot = maillot.nomExact || "Sans nom";
-                    ventesParMaillot[nomMaillot] = (ventesParMaillot[nomMaillot] || 0) + (maillot.prixVente || 0);
+                if (!isNaN(prixVente)) {
+                    totalChiffreAffaires += prixVente;
                 }
+
+                if (!isNaN(prixVente) && !isNaN(prixAchat)) {
+                    totalBenefice += prixVente - prixAchat;
+                }
+
+                // Compter les statuts
+                if (!statutCounts[statut]) {
+                    statutCounts[statut] = 0;
+                }
+                statutCounts[statut]++;
             });
         }
     });
 
-    const benefice = chiffreAffaires - depenses;
+    chiffreAffairesEl.textContent = totalChiffreAffaires.toFixed(2) + " €";
+    beneficeEl.textContent = totalBenefice.toFixed(2) + " €";
 
-    chiffreAffairesEl.textContent = `${chiffreAffaires.toFixed(2)} €`;
-    beneficeEl.textContent = `${benefice.toFixed(2)} €`;
-    beneficeEl.style.color = benefice < 0 ? "red" : "green";
+    // Préparer les données pour le graphique
+    const labels = Object.keys(statutCounts);
+    const data = Object.values(statutCounts);
 
     new Chart(ctx, {
         type: "bar",
         data: {
-            labels: Object.keys(ventesParMaillot),
+            labels: labels,
             datasets: [{
-                label: "Chiffre d'affaires par maillot livré (€)",
-                data: Object.values(ventesParMaillot),
-                backgroundColor: "rgba(75, 192, 192, 0.6)",
-                borderColor: "rgba(75, 192, 192, 1)",
-                borderWidth: 1
+                label: "Nombre de maillots",
+                data: data,
+                backgroundColor: "rgba(54, 162, 235, 0.6)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                borderWidth: 1,
             }]
         },
         options: {
             responsive: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: ctx => `${ctx.raw.toFixed(2)} €`
-                    }
-                }
-            },
             scales: {
                 y: {
                     beginAtZero: true,
-                    ticks: {
-                        callback: value => `${value} €`
+                    title: {
+                        display: true,
+                        text: 'Nombre de maillots'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Statut'
                     }
                 }
             }

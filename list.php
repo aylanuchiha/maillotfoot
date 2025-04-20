@@ -1,19 +1,14 @@
 <?php
-// lire_commandes.php
-require_once 'bdd.php';
+require 'bdd.php';
 
-try {
-    $stmt = $pdo->query("SELECT * FROM commande");
-    $commandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmt = $pdo->query("SELECT * FROM commandes");
+$commandes = $stmt->fetchAll();
 
-    foreach ($commandes as &$commande) {
-        $stmtMaillots = $pdo->prepare("SELECT * FROM maillot WHERE commande_id = ?");
-        $stmtMaillots->execute([$commande['id']]);
-        $commande['maillots'] = $stmtMaillots->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    echo json_encode($commandes);
-} catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+foreach ($commandes as &$commande) {
+    $stmtMaillots = $pdo->prepare("SELECT * FROM maillots WHERE commande_id = ?");
+    $stmtMaillots->execute([$commande['id']]);
+    $commande['maillots'] = $stmtMaillots->fetchAll();
 }
+
+echo json_encode($commandes);
 ?>

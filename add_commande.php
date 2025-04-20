@@ -1,6 +1,5 @@
 <?php
-// ajouter_commande.php
-require_once 'bdd.php';
+require 'bdd.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -12,11 +11,8 @@ $grossiste = $data['grossiste'];
 $telephone = $data['telephone'];
 $date = $data['date'];
 
-try {
-    $stmt = $pdo->prepare("INSERT INTO commande (nom, quantite, prixTotal, prixUnitaire, grossiste, telephone, date) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->execute([$nom, $quantite, $prixTotal, $prixUnitaire, $grossiste, $telephone, $date]);
-    echo json_encode(['success' => true]);
-} catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-}
+$stmt = $pdo->prepare("INSERT INTO commandes (nom, quantite, prix_total, prix_unitaire, grossiste, telephone, date) VALUES (?, ?, ?, ?, ?, ?, ?)");
+$stmt->execute([$nom, $quantite, $prixTotal, $prixUnitaire, $grossiste, $telephone, $date]);
+
+echo json_encode(['status' => 'success']);
 ?>
