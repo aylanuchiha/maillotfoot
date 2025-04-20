@@ -1,3 +1,6 @@
+console.log("Fichier JS chargé !");
+
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("commandeForm");
 
