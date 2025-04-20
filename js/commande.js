@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
       date
     };
 
-    const response = await fetch("add_commande.php", {
+    console.log("Envoi de la requête à add_commande.php :", commande);
+    const response = await fetch("../add_commande.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
