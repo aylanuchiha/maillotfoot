@@ -17,44 +17,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const prixUnitaire = prixTotal / quantite;
 
-    // Enregistrement dans la table commandes
-    const commande = {
-      nom,
-      quantite,
-      prixTotal,
-      prixUnitaire,
-      grossiste,
-      telephone,
-      date
-    };
-
+    const commande = { nom, quantite, prixTotal, prixUnitaire, grossiste, telephone, date };
     commandes.push(commande);
     localStorage.setItem("commandes", JSON.stringify(commandes));
 
-    // 🔄 Mise à jour de la vraie table "stock"
     const index = stock.findIndex(item => item.nom === nom);
-
     if (index !== -1) {
-      // ⚠️ Correction du calcul de la moyenne pondérée :
       const ancienneQuantite = stock[index].quantite;
       const ancienneValeurTotale = stock[index].prixUnitaire * ancienneQuantite;
       const nouvelleValeurTotale = prixUnitaire * quantite;
       const nouvelleQuantiteTotale = ancienneQuantite + quantite;
-
       stock[index].quantite = nouvelleQuantiteTotale;
       stock[index].prixUnitaire = (ancienneValeurTotale + nouvelleValeurTotale) / nouvelleQuantiteTotale;
     } else {
-      // Ajout d’un nouveau produit dans le stock
-      stock.push({
-        nom,
-        quantite,
-        prixUnitaire,
-        image: ""
-      });
+      stock.push({ nom, quantite, prixUnitaire, image: "" });
     }
 
     localStorage.setItem("stock", JSON.stringify(stock));
-
     afficherCommandes();
     form.reset();
   });
@@ -72,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
     commandes.forEach((commande, index) => {
       const div = document.createElement("div");
       div.className = "commande";
-
       div.innerHTML = `
         <strong>${commande.nom}</strong> - Qté: ${commande.quantite}<br>
         Prix Total: ${commande.prixTotal}€ (${commande.prixUnitaire.toFixed(2)}€/u)<br>
@@ -84,7 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <hr>
       `;
-
       listeCommandes.appendChild(div);
     });
   }

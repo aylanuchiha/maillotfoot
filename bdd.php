@@ -6,15 +6,10 @@ $username = "u130341384_aylan";
 $password = "Hamid_Bozboz2002";
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass);
+    // Activer les exceptions PDO
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Petite requête test
-    $stmt = $pdo->query("SELECT COUNT(*) FROM commande");
-    $count = $stmt->fetchColumn();
-
-    echo "✅ Connexion OK - Nombre de commandes : " . $count;
 } catch (PDOException $e) {
-    echo "❌ Erreur : " . $e->getMessage();
+    die("Erreur de connexion : " . $e->getMessage());
 }
 ?>
