@@ -1,6 +1,5 @@
 <?php
-// Connexion à la base de données
-$host = "localhost"; // ou autre selon hostinger
+$host = "localhost"; // ou l'adresse exacte de Hostinger si différente
 $db = "u130341384_maillot_db";
 $user = "u130341384_aylan";
 $pass = "Hamid_Bozboz2002";
@@ -15,6 +14,8 @@ $options = [
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
-    exit('Erreur de connexion à la base de données : ' . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+    exit;
 }
 ?>
