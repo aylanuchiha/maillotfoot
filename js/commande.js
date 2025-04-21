@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Envoi de la commande:", commande);
 
       // Correction du chemin vers le script PHP
-      const response = await fetch("php/add_commande.php", {
+      const response = await fetch("../php/add_commande.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -147,7 +147,7 @@ function voirDetails(id) {
 function supprimerCommande(id) {
   if (confirm("Êtes-vous sûr de vouloir supprimer cette commande ?")) {
     // Correction du chemin vers le script PHP
-    fetch(`php/delete_commande.php?id=${id}`, {
+    fetch(`../php/delete_commande.php?id=${id}`, {
       method: "DELETE"
     })
         .then(response => response.json())
