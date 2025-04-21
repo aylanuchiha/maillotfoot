@@ -26,7 +26,7 @@
       </div>
       <div class="col-md-3">
         <label for="prixTotal" class="form-label">Prix total (€)</label>
-        <input type="number" class="form-control" id="prixTotal" required>
+        <input type="number" class="form-control" id="prixTotal" step="0.01" required>
       </div>
       <div class="col-md-6">
         <label for="grossiste" class="form-label">Grossiste</label>
@@ -48,13 +48,12 @@
   </div>
 </main>
 
-<!-- <script src="/js/commande.js"></script> -->
-<script>
-  console.log("Fichier JS chargé !");
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Chargement du script JS -->
+<script src="js/commande.js"></script>
+
+<!-- Chargement de la navbar -->
 <script>
   fetch("navbar.html")
           .then(response => response.text())

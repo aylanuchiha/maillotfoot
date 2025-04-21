@@ -1,7 +1,9 @@
 <?php
-header("Content-Type: application/json"); // Important pour retour JSON propre
+header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *"); // Si besoin pour le développement
+header("Access-Control-Allow-Headers: Content-Type");
 
-require 'bdd.php'; // Connexion à la base
+require_once 'bdd.php'; // Assurez-vous que le chemin est correct
 
 // Récupération des données JSON
 $data = json_decode(file_get_contents('php://input'), true);
@@ -23,9 +25,9 @@ foreach ($required as $field) {
 }
 
 $nom = $data['nom'];
-$quantite = $data['quantite'];
-$prixTotal = $data['prixTotal'];
-$prixUnitaire = $data['prixUnitaire'];
+$quantite = intval($data['quantite']);
+$prixTotal = floatval($data['prixTotal']);
+$prixUnitaire = floatval($data['prixUnitaire']);
 $grossiste = $data['grossiste'];
 $telephone = $data['telephone'];
 $date = $data['date'];
@@ -34,9 +36,12 @@ try {
     $stmt = $pdo->prepare("INSERT INTO commandes (nom, quantite, prix_total, prix_unitaire, grossiste, telephone, date) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$nom, $quantite, $prixTotal, $prixUnitaire, $grossiste, $telephone, $date]);
 
-    echo json_encode(['status' => 'success']);
-} catch (Exception $e) {
+    echo json_encode(['status' => 'success', 'message' => 'Commande ajoutée avec succès']);
+} catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    echo json_encode(['status' => 'error', 'message' => 'Erreur lors de l\'ajout en base de données']);
+
+    // Logging pour debug (à retirer en production)
+    error_log('Erreur DB: ' . $e->getMessage());
 }
 ?>
