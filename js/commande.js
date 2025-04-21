@@ -37,7 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Envoi de la commande:", commande);
 
       // Correction du chemin vers le script PHP
-      const response = await fetch("php/add_commande.php", {
+      const response = await fetch("https://goldenrod-coyote-338783.hostingersite.com/php/add_commande.php", {
+
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -1,4 +1,9 @@
 <?php
+
+$data = json_decode(file_get_contents('php://input'), true);
+file_put_contents('log.txt', file_get_contents('php://input')); // debug local
+
+
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *"); // Si besoin pour le développement
 header("Access-Control-Allow-Headers: Content-Type");
